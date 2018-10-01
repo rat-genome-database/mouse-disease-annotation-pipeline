@@ -1,0 +1,11 @@
+v 1.0.3, Oct 1, 2018
+  moved from subversion to github
+
+v 1.0.2, Jun 1, 2018
+  added spaces to annotation notes to improve presentation of MouseDO annots on gene report pages
+
+v 1.0.1, May 18, 2018
+  added generation of ISS annotations for rat/mouse/human orthologs
+
+v 1.0, May 15, 2018
+  initial version of the pipeline
