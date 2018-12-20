@@ -1,3 +1,6 @@
+v 1.0.4, Dec 20, 2018
+  updated dependencies
+
 v 1.0.3, Oct 1, 2018
   moved from subversion to github
 
