@@ -74,6 +74,7 @@ public class Manager {
         deleteStaleAnnotations(date0, originalAnnotCount, getStaleAnnotDeleteThreshold());
 
         logStatus.info("=== OK === elapsed time "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
+        logStatus.info("");
     }
 
     String downloadRemoteFile() throws Exception {
