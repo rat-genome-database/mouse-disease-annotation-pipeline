@@ -73,6 +73,20 @@ public class Manager {
 
         deleteStaleAnnotations(date0, originalAnnotCount, getStaleAnnotDeleteThreshold());
 
+        // display change in annotation count
+        int newAnnotCount = dao.getAnnotationsModifiedBeforeTimestamp(new Date(), getCreatedBy()).size();
+        String change = "";
+        int annotCountChange = newAnnotCount - originalAnnotCount;
+        if( annotCountChange != 0 ) {
+            if( annotCountChange>0 ) {
+                change = ",  +"+annotCountChange;
+            } else {
+                change = ",  "+annotCountChange;
+            }
+        }
+        logStatus.info("===");
+        logStatus.info("ANNOT COUNT CURRENT: "+newAnnotCount + change);
+
         logStatus.info("=== OK === elapsed time "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
         logStatus.info("");
     }
