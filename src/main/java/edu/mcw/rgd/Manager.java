@@ -13,6 +13,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.BufferedReader;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,7 +59,10 @@ public class Manager {
         long time0 = System.currentTimeMillis();
         Date date0 = new Date();
 
-        logStatus.info(dao.getConnectionInfo());
+        logStatus.info("   "+dao.getConnectionInfo());
+
+        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        logStatus.info("   started at "+sdt.format(date0));
 
         int originalAnnotCount = dao.getAnnotationsModifiedBeforeTimestamp(date0, getCreatedBy()).size();
         logStatus.info("ANNOT COUNT ORIGINAL: "+originalAnnotCount);

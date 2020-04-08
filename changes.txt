@@ -1,3 +1,6 @@
+Apr 08, 2020
+  updated jar dependencies; better summary
+
 v 1.0.6, Feb 11, 2019
   improved summary
 
