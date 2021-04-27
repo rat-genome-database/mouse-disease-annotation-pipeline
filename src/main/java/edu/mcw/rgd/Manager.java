@@ -65,7 +65,7 @@ public class Manager {
         logStatus.info("   started at "+sdt.format(date0));
 
         int originalAnnotCount = dao.getAnnotationsModifiedBeforeTimestamp(date0, getCreatedBy()).size();
-        logStatus.info("ANNOT COUNT ORIGINAL: "+originalAnnotCount);
+        logInfo("ANNOT COUNT ORIGINAL: ", originalAnnotCount);
 
         String localFileName = downloadRemoteFile();
 
@@ -89,7 +89,7 @@ public class Manager {
             }
         }
         logStatus.info("===");
-        logStatus.info("ANNOT COUNT CURRENT: "+newAnnotCount + change);
+        logStatus.info("ANNOT COUNT CURRENT: "+ newAnnotCount + change);
 
         logStatus.info("=== OK === elapsed time "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
         logStatus.info("");
@@ -126,7 +126,7 @@ public class Manager {
             }
         }
 
-        logStatus.info("lines loaded: "+records.size());
+        logInfo("lines loaded: ", records.size());
         return records;
     }
 
@@ -134,22 +134,22 @@ public class Manager {
 
         // load annotations in rgd for Mouse Do pipeline
         Map<String, Integer> mouseDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode());
-        logStatus.info("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode()+": "+mouseDoAnnotsInRgd.size());
+        logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode()+": ", mouseDoAnnotsInRgd.size());
 
         Map<String, Integer> mouseDoAnnotsInRgdIss = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode2());
-        logStatus.info("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode2()+": "+mouseDoAnnotsInRgdIss.size());
+        logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode2()+": ", mouseDoAnnotsInRgdIss.size());
 
         Set<String> omimDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdOmimPipeline(), getEvidenceCodeOmimPipeline()).keySet();
-        logStatus.info("annotations in RGD for OmimDiseasePipeline, evidence "+getEvidenceCodeOmimPipeline()+": "+omimDoAnnotsInRgd.size());
+        logInfo("annotations in RGD for OmimDiseasePipeline, evidence "+getEvidenceCodeOmimPipeline()+": ", omimDoAnnotsInRgd.size());
 
         Set<String> ctdDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdCtdPipeline(), getEvidenceCodeCtdPipeline()).keySet();
-        logStatus.info("annotations in RGD for CTDDiseasePipeline, evidence "+getEvidenceCodeCtdPipeline()+": "+ctdDoAnnotsInRgd.size());
+        logInfo("annotations in RGD for CTDDiseasePipeline, evidence "+getEvidenceCodeCtdPipeline()+": ", ctdDoAnnotsInRgd.size());
 
         Map<Integer, List<Integer>> orthologs = dao.getOrthologs();
         logStatus.info("rat-mouse-human orthologs loaded");
 
         Map<Integer, Gene> geneMap = dao.getGenes();
-        logStatus.info("rat-mouse-human genes loaded: "+geneMap.size());
+        logInfo("rat-mouse-human genes loaded: ", geneMap.size());
 
 
         AtomicInteger[] counters = new AtomicInteger[19];
@@ -314,27 +314,31 @@ public class Manager {
             }
         });
 
-        logStatus.info("lines with valid DO terms: "+counters[0].get());
-        logStatus.info("lines with valid genes: "+counters[1].get());
-        logStatus.info("lines with valid DO terms and genes: "+counters[2].get());
-        logStatus.info("  out of which are for MOUSE       : "+counters[3].get());
+        logInfo("lines with valid DO terms: ", counters[0].get());
+        logInfo("lines with valid genes: ", counters[1].get());
+        logInfo("lines with valid DO terms and genes: ", counters[2].get());
+        logInfo("  out of which are for MOUSE       : ", counters[3].get());
         logStatus.info("===");
-        logStatus.info("IEA annotations skipped, same as OMIM: "+counters[4].get());
-        logStatus.info("IEA annotations skipped, same as CTD: "+counters[5].get());
-        logStatus.info("IEA annotations incoming: MouseDO : "+counters[6].get());
-        logStatus.info("  out of which are for MOUSE  : "+counters[7].get());
-        logStatus.info("  out of which are for HUMAN  : "+counters[8].get());
-        logStatus.info("IEA MouseDO annotations already in RGD: "+counters[9].get());
-        logStatus.info("IEA MouseDO annotations inserted: "+counters[10].get());
+        logInfo("IEA annotations skipped, same as OMIM: ", counters[4].get());
+        logInfo("IEA annotations skipped, same as CTD: ", counters[5].get());
+        logInfo("IEA annotations incoming: MouseDO : ", counters[6].get());
+        logInfo("  out of which are for MOUSE  : ", counters[7].get());
+        logInfo("  out of which are for HUMAN  : ", counters[8].get());
+        logInfo("IEA MouseDO annotations already in RGD: ", counters[9].get());
+        logInfo("IEA MouseDO annotations inserted: ", counters[10].get());
         logStatus.info("===");
-        logStatus.info("ISS annotations skipped, same as OMIM: "+counters[11].get());
-        logStatus.info("ISS annotations skipped, same as CTD: "+counters[12].get());
-        logStatus.info("ISS annotations incoming: MouseDO : "+counters[13].get());
-        logStatus.info("  out of which are for MOUSE  : "+counters[16].get());
-        logStatus.info("  out of which are for HUMAN  : "+counters[17].get());
-        logStatus.info("  out of which are for RAT    : "+counters[18].get());
-        logStatus.info("ISS MouseDO annotations already in RGD: "+counters[14].get());
-        logStatus.info("ISS MouseDO annotations inserted: "+counters[15].get());
+        logInfo("ISS annotations skipped, same as OMIM: ", counters[11].get());
+        logInfo("ISS annotations skipped, same as CTD: ", counters[12].get());
+        logInfo("ISS annotations incoming: MouseDO : ", counters[13].get());
+        logInfo("  out of which are for MOUSE  : ", counters[16].get());
+        logInfo("  out of which are for HUMAN  : ", counters[17].get());
+        logInfo("  out of which are for RAT    : ", counters[18].get());
+        logInfo("ISS MouseDO annotations already in RGD: ", counters[14].get());
+        logInfo("ISS MouseDO annotations inserted: ", counters[15].get());
+    }
+
+    void logInfo(String txt, int cnt) {
+        logStatus.info(txt + Utils.formatThousands(cnt));
     }
 
     Map<String, Integer> getTermAccAndObjectRgdIdsForAnnotations(int refRgdId, String evidence) throws Exception {
