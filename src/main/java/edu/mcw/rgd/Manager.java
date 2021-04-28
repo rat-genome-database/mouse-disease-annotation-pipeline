@@ -373,10 +373,8 @@ public class Manager {
 
         int staleAnnotDeleteThresholdPerc = Integer.parseInt(staleAnnotDeleteThresholdStr.substring(0, staleAnnotDeleteThresholdStr.length()-1));
         int staleAnnotDeleteThresholdCount = (staleAnnotDeleteThresholdPerc*originalAnnotCount) / 100;
-        logStatus.info("OBSOLETE ANNOTATION "+staleAnnotDeleteThresholdStr+" DELETE THRESHOLD: "+ staleAnnotDeleteThresholdCount);
 
         List<Annotation> obsoleteAnnotations = dao.getAnnotationsModifiedBeforeTimestamp(time0, getCreatedBy());
-        logStatus.info("OBSOLETE ANNOTATION COUNT "+ obsoleteAnnotations.size());
 
         if( obsoleteAnnotations.size() > staleAnnotDeleteThresholdCount ) {
             String msg = "WARN: OBSOLETE ANNOTATIONS NOT DELETED: "+staleAnnotDeleteThresholdStr+" THRESHOLD VIOLATED! - ";
@@ -384,10 +382,14 @@ public class Manager {
             if( originalAnnotCount!=0 ) {
                 logStatus.info(msg + staleAnnotDeleteThresholdCount);
             }
+            logStatus.info("    OBSOLETE ANNOTATION COUNT "+ obsoleteAnnotations.size());
             return;
         }
 
-        dao.deleteAnnotations(obsoleteAnnotations, getCreatedBy(), time0);
+        if( !obsoleteAnnotations.isEmpty() ) {
+            dao.deleteAnnotations(obsoleteAnnotations, getCreatedBy(), time0);
+            logStatus.info("OBSOLETE ANNOTATIONS DELETED: "+ Utils.formatThousands(obsoleteAnnotations.size()));
+        }
     }
 
     public void setVersion(String version) {
