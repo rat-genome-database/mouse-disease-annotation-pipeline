@@ -1,3 +1,6 @@
+May 13, 2021
+  logging tune up
+
 Apr 28, 2021
   improved reporting of deleted annotations
 
