@@ -50,7 +50,7 @@ public class Manager {
         try {
             manager.run();
         }catch (Exception e) {
-            manager.logStatus.error(e);
+            Utils.printStackTrace(e, manager.logStatus);
             throw e;
         }
     }
@@ -105,7 +105,10 @@ public class Manager {
         return downloader.downloadNew();
     }
 
-    final String EXPECTED_HEADER_LINE = "DO Disease ID\tDO Disease Name\tOMIM IDs\tHomoloGene ID\tCommon Organism Name\tNCBI Taxon ID\tSymbol\tEntrezGene ID\tMouse MGI ID";
+    // previous header line valid until June 2021 -- they dropped 'HomoloGene ID' column
+    //final String EXPECTED_HEADER_LINE = "DO Disease ID\tDO Disease Name\tOMIM IDs\tHomoloGene ID\tCommon Organism Name\tNCBI Taxon ID\tSymbol\tEntrezGene ID\tMouse MGI ID";
+
+    final String EXPECTED_HEADER_LINE = "DO Disease ID\tDO Disease Name\tOMIM IDs\tCommon Organism Name\tNCBI Taxon ID\tSymbol\tEntrezGene ID\tMouse MGI ID";
 
     List<Record> loadFile(String localFileName) throws Exception {
         List<Record> records = new ArrayList<>();
@@ -121,7 +124,17 @@ public class Manager {
             String line;
             while( (line=in.readLine())!=null ) {
                 Record rec = new Record();
-                rec.line = line;
+
+                String[] cols = line.split("[\\t]", -1);
+                rec.doTermAcc = cols[0];
+                rec.doTermName = cols[1]; // f.e. 3MC syndrome 1
+                rec.omimIds = cols[2]; // f.e. OMIM:257920
+                rec.commonOrganismName = cols[3]; // f.e. human
+                rec.ncbiTaxonId = cols[4]; // f.e. 9606
+                rec.symbol = cols[5]; // f.e. MASP1
+                rec.egId = cols[6]; // f.e. 5648
+                rec.mgiId = cols[7];
+
                 records.add(rec);
             }
         }
@@ -158,11 +171,11 @@ public class Manager {
         }
 
         records.parallelStream().forEach(rec -> {
-            String[] cols = rec.line.split("[\\t]", -1);
-            String doId = cols[0];
-            String omimIds = cols[2].replace("|", " | ").intern();
-            String egId = cols[7];
-            String mgiId = cols[8];
+            String doId = rec.doTermAcc;
+            String omimIds = rec.omimIds.replace("|", " | ").intern();
+            String egId = rec.egId;
+            String mgiId = rec.mgiId;
+
             try {
                 rec.term = dao.getTermWithStatsCached(doId);
 
