@@ -6,7 +6,8 @@ import edu.mcw.rgd.datamodel.Ortholog;
 import edu.mcw.rgd.datamodel.SpeciesType;
 import edu.mcw.rgd.datamodel.ontology.Annotation;
 import edu.mcw.rgd.datamodel.ontologyx.TermWithStats;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -16,8 +17,8 @@ import java.util.*;
  */
 public class DAO {
 
-    Logger logInserted = Logger.getLogger("inserted");
-    Logger logDeleted = Logger.getLogger("deleted");
+    Logger logInserted = LogManager.getLogger("inserted");
+    Logger logDeleted = LogManager.getLogger("deleted");
 
     AnnotationDAO adao = new AnnotationDAO();
     GeneDAO geneDAO = new GeneDAO();

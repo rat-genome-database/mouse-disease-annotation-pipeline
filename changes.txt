@@ -1,3 +1,6 @@
+Feb 21, 2022
+  updated log4j to avoid zero day exploit
+
 Jun 17, 2021
   updated code: input file format change (one column was dropped)
 
