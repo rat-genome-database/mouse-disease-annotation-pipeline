@@ -15,7 +15,7 @@ fi
 
 cd $APPDIR
 java -Dspring.config=$APPDIR/../properties/default_db2.xml \
-    -Dlog4j.configuration=file://$APPDIR/properties/log4j.properties \
+    -Dlog4j.configurationFile=file://$APPDIR/properties/log4j2.xml \
     -jar lib/${APPNAME}.jar "$@" 2>&1 | tee run.log
 
 mailx -s "[$SERVER] Mouse DO Annotation pipeline OK" $EMAIL_LIST < $APPDIR/logs/status.log
