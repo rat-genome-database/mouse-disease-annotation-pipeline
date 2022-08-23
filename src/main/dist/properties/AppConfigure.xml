@@ -2,7 +2,7 @@
 
 <beans>
     <bean id="manager" class="edu.mcw.rgd.Manager">
-        <property name="version" value="--Mouse Disease Annotation pipeline  -- build Aug 22, 2022 --" />
+        <property name="version" value="--Mouse Disease Annotation pipeline  -- build Aug 23, 2022 --" />
         <property name="sourcePipeline" value="MouseDO" />
         <property name="remoteDoFile" value="http://www.informatics.jax.org/downloads/reports/MGI_DO.rpt" />
         <property name="localDoFile" value="data/MGI_DO.rpt.gz" />
@@ -10,7 +10,7 @@
         <property name="staleAnnotDeleteThreshold" value="5%" />
 
         <property name="refRgdId" value="13592920" />
-        <property name="evidenceCode" value="IEA" />
+        <property name="evidenceCode" value="IAGP" />
         <property name="evidenceCode2" value="ISS" /> <!-- evidence code for orthologous annotations -->
 
         <property name="refRgdIdOmimPipeline" value="7240710" />

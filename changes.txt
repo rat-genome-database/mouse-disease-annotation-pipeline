@@ -1,3 +1,8 @@
+Aug 23, 2022
+  human data is now skipped from processing to avoid ingest of data that originally was in RGD, submitted to the Alliance,
+    and subsequently ingested by MGI and then exported to the file the mouse-disease-annotation-pipeline is using as the source of data
+  evidence code for primary annotations set to IAGP (previously IEA) to emphasize that the mouse annotations have a strong evidence
+
 Aug 22, 2022
   fixed logging of dates
 

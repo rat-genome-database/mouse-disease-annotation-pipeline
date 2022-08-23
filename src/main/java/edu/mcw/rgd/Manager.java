@@ -210,6 +210,8 @@ public class Manager {
 
                 if( rec.gene.getSpeciesTypeKey()== SpeciesType.MOUSE ) {
                     counters[3].incrementAndGet();
+                } else {
+                    return; // skip non-MOUSE annotations
                 }
 
                 // see if the incoming annotation is the same as OMIM annotation
@@ -333,13 +335,13 @@ public class Manager {
         logInfo("lines with valid DO terms and genes: ", counters[2].get());
         logInfo("  out of which are for MOUSE       : ", counters[3].get());
         logStatus.info("===");
-        logInfo("IEA annotations skipped, same as OMIM: ", counters[4].get());
-        logInfo("IEA annotations skipped, same as CTD: ", counters[5].get());
-        logInfo("IEA annotations incoming: MouseDO : ", counters[6].get());
+        logInfo("IAGP annotations skipped, same as OMIM: ", counters[4].get());
+        logInfo("IAGP annotations skipped, same as CTD: ", counters[5].get());
+        logInfo("IAGP annotations incoming: MouseDO : ", counters[6].get());
         logInfo("  out of which are for MOUSE  : ", counters[7].get());
         logInfo("  out of which are for HUMAN  : ", counters[8].get());
-        logInfo("IEA MouseDO annotations already in RGD: ", counters[9].get());
-        logInfo("IEA MouseDO annotations inserted: ", counters[10].get());
+        logInfo("IAGP MouseDO annotations already in RGD: ", counters[9].get());
+        logInfo("IAGP MouseDO annotations inserted: ", counters[10].get());
         logStatus.info("===");
         logInfo("ISS annotations skipped, same as OMIM: ", counters[11].get());
         logInfo("ISS annotations skipped, same as CTD: ", counters[12].get());
