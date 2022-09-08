@@ -1,3 +1,6 @@
+Sep 08, 2022
+  fixed summary email
+
 Aug 23, 2022
   human data is now skipped from processing to avoid ingest of data that originally was in RGD, submitted to the Alliance,
     and subsequently ingested by MGI and then exported to the file the mouse-disease-annotation-pipeline is using as the source of data
