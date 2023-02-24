@@ -3,7 +3,7 @@
 # Mouse Disease pipeline
 #
 . /etc/profile
-APPNAME=MouseDisease
+APPNAME=mouse-disease-annotation-pipeline
 APPDIR=/home/rgddata/pipelines/$APPNAME
 SERVER=`hostname -s | tr '[a-z]' '[A-Z]'`
 
