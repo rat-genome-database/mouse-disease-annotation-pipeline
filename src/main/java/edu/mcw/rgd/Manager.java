@@ -26,6 +26,9 @@ public class Manager {
 
     Logger logStatus = LogManager.getLogger("status");
 
+    static final boolean SKIP_ANNOTATIONS_SAME_AS_OMIM = false;
+    static final boolean SKIP_ANNOTATIONS_SAME_AS_CTD = false;
+
     private DAO dao = new DAO();
     private String version;
     private String sourcePipeline;
@@ -215,16 +218,20 @@ public class Manager {
                 }
 
                 // see if the incoming annotation is the same as OMIM annotation
-                String key = rec.term.getAccId()+"|"+rec.gene.getRgdId();
-                if( omimDoAnnotsInRgd.contains(key) ) {
-                    counters[4].incrementAndGet();
-                    return;
+                String key = rec.term.getAccId() + "|" + rec.gene.getRgdId();
+                if( SKIP_ANNOTATIONS_SAME_AS_OMIM ) {
+                    if (omimDoAnnotsInRgd.contains(key)) {
+                        counters[4].incrementAndGet();
+                        return;
+                    }
                 }
 
                 // see if the incoming annotation is the same as CTD annotation
-                if( ctdDoAnnotsInRgd.contains(key) ) {
-                    counters[5].incrementAndGet();
-                    return;
+                if( SKIP_ANNOTATIONS_SAME_AS_CTD ) {
+                    if (ctdDoAnnotsInRgd.contains(key)) {
+                        counters[5].incrementAndGet();
+                        return;
+                    }
                 }
 
                 counters[6].incrementAndGet();
@@ -272,18 +279,22 @@ public class Manager {
                 for( int geneRgdId: orthos ) {
 
                     Gene gene = geneMap.get(geneRgdId);
+                    String key2 = rec.term.getAccId()+"|"+geneRgdId;
 
                     // see if the incoming annotation is the same as OMIM annotation
-                    String key2 = rec.term.getAccId()+"|"+geneRgdId;
-                    if( omimDoAnnotsInRgd.contains(key2) ) {
-                        counters[11].incrementAndGet();
-                        return;
+                    if( SKIP_ANNOTATIONS_SAME_AS_OMIM ) {
+                        if (omimDoAnnotsInRgd.contains(key2)) {
+                            counters[11].incrementAndGet();
+                            return;
+                        }
                     }
 
                     // see if the incoming annotation is the same as CTD annotation
-                    if( ctdDoAnnotsInRgd.contains(key2) ) {
-                        counters[12].incrementAndGet();
-                        return;
+                    if( SKIP_ANNOTATIONS_SAME_AS_CTD ) {
+                        if (ctdDoAnnotsInRgd.contains(key2)) {
+                            counters[12].incrementAndGet();
+                            return;
+                        }
                     }
 
                     counters[13].incrementAndGet();

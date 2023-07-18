@@ -1,3 +1,6 @@
+Jul 18, 2023
+  no longer skipping annotations from processing -- annotations that are the same as OMIM and CTD annotations
+
 Jul 13, 2023
   updated readme
 
