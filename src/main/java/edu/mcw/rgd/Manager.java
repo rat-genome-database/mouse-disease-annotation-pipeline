@@ -365,7 +365,9 @@ public class Manager {
     }
 
     void logInfo(String txt, int cnt) {
-        logStatus.info(txt + Utils.formatThousands(cnt));
+        if( cnt != 0 ) {
+            logStatus.info(txt + Utils.formatThousands(cnt));
+        }
     }
 
     Map<String, Integer> getTermAccAndObjectRgdIdsForAnnotations(int refRgdId, String evidence) throws Exception {
