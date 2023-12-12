@@ -65,7 +65,7 @@ public class Manager {
 
         logStatus.info("   "+dao.getConnectionInfo());
 
-        SimpleDateFormat sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        var sdt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         logStatus.info("   started at "+sdt.format(date0));
 
         int originalAnnotCount = dao.getAnnotationsModifiedBeforeTimestamp(date0, getCreatedBy()).size();

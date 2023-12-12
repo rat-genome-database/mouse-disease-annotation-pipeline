@@ -1,3 +1,6 @@
+Dec 12, 2023
+  updated to java 17
+
 Jul 21, 2023
   tuned up summary - no longer showing info for data with events with 0 occurrences
 
