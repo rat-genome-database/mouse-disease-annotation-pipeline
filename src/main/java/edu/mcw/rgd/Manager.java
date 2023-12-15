@@ -26,9 +26,6 @@ public class Manager {
 
     Logger logStatus = LogManager.getLogger("status");
 
-    static final boolean SKIP_ANNOTATIONS_SAME_AS_OMIM = false;
-    static final boolean SKIP_ANNOTATIONS_SAME_AS_CTD = false;
-
     private DAO dao = new DAO();
     private String version;
     private String sourcePipeline;
@@ -156,11 +153,11 @@ public class Manager {
         Map<String, Integer> mouseDoAnnotsInRgdIss = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode2());
         logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode2()+": ", mouseDoAnnotsInRgdIss.size());
 
-        Set<String> omimDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdOmimPipeline(), getEvidenceCodeOmimPipeline()).keySet();
-        logInfo("annotations in RGD for OmimDiseasePipeline, evidence "+getEvidenceCodeOmimPipeline()+": ", omimDoAnnotsInRgd.size());
+        //Set<String> omimDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdOmimPipeline(), getEvidenceCodeOmimPipeline()).keySet();
+        //logInfo("annotations in RGD for OmimDiseasePipeline, evidence "+getEvidenceCodeOmimPipeline()+": ", omimDoAnnotsInRgd.size());
 
-        Set<String> ctdDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdCtdPipeline(), getEvidenceCodeCtdPipeline()).keySet();
-        logInfo("annotations in RGD for CTDDiseasePipeline, evidence "+getEvidenceCodeCtdPipeline()+": ", ctdDoAnnotsInRgd.size());
+        //Set<String> ctdDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdCtdPipeline(), getEvidenceCodeCtdPipeline()).keySet();
+        //logInfo("annotations in RGD for CTDDiseasePipeline, evidence "+getEvidenceCodeCtdPipeline()+": ", ctdDoAnnotsInRgd.size());
 
         Map<Integer, List<Integer>> orthologs = dao.getOrthologs();
         logStatus.info("rat-mouse-human orthologs loaded");
@@ -168,7 +165,7 @@ public class Manager {
         Map<Integer, Gene> geneMap = dao.getGenes();
         logInfo("rat-mouse-human genes loaded: ", geneMap.size());
 
-
+        // note: counters 4,5,11,12 are not used
         AtomicInteger[] counters = new AtomicInteger[19];
         for( int i=0; i<counters.length; i++ ) {
             counters[i] = new AtomicInteger(0);
@@ -217,22 +214,7 @@ public class Manager {
                     return; // skip non-MOUSE annotations
                 }
 
-                // see if the incoming annotation is the same as OMIM annotation
                 String key = rec.term.getAccId() + "|" + rec.gene.getRgdId();
-                if( SKIP_ANNOTATIONS_SAME_AS_OMIM ) {
-                    if (omimDoAnnotsInRgd.contains(key)) {
-                        counters[4].incrementAndGet();
-                        return;
-                    }
-                }
-
-                // see if the incoming annotation is the same as CTD annotation
-                if( SKIP_ANNOTATIONS_SAME_AS_CTD ) {
-                    if (ctdDoAnnotsInRgd.contains(key)) {
-                        counters[5].incrementAndGet();
-                        return;
-                    }
-                }
 
                 counters[6].incrementAndGet();
                 if( rec.gene.getSpeciesTypeKey()== SpeciesType.MOUSE ) {
@@ -280,22 +262,6 @@ public class Manager {
 
                     Gene gene = geneMap.get(geneRgdId);
                     String key2 = rec.term.getAccId()+"|"+geneRgdId;
-
-                    // see if the incoming annotation is the same as OMIM annotation
-                    if( SKIP_ANNOTATIONS_SAME_AS_OMIM ) {
-                        if (omimDoAnnotsInRgd.contains(key2)) {
-                            counters[11].incrementAndGet();
-                            return;
-                        }
-                    }
-
-                    // see if the incoming annotation is the same as CTD annotation
-                    if( SKIP_ANNOTATIONS_SAME_AS_CTD ) {
-                        if (ctdDoAnnotsInRgd.contains(key2)) {
-                            counters[12].incrementAndGet();
-                            return;
-                        }
-                    }
 
                     counters[13].incrementAndGet();
                     if( gene.getSpeciesTypeKey()== SpeciesType.MOUSE ) {
@@ -346,16 +312,12 @@ public class Manager {
         logInfo("lines with valid DO terms and genes: ", counters[2].get());
         logInfo("  out of which are for MOUSE       : ", counters[3].get());
         logStatus.info("===");
-        logInfo("IAGP annotations skipped, same as OMIM: ", counters[4].get());
-        logInfo("IAGP annotations skipped, same as CTD: ", counters[5].get());
         logInfo("IAGP annotations incoming: MouseDO : ", counters[6].get());
         logInfo("  out of which are for MOUSE  : ", counters[7].get());
         logInfo("  out of which are for HUMAN  : ", counters[8].get());
         logInfo("IAGP MouseDO annotations already in RGD: ", counters[9].get());
         logInfo("IAGP MouseDO annotations inserted: ", counters[10].get());
         logStatus.info("===");
-        logInfo("ISS annotations skipped, same as OMIM: ", counters[11].get());
-        logInfo("ISS annotations skipped, same as CTD: ", counters[12].get());
         logInfo("ISS annotations incoming: MouseDO : ", counters[13].get());
         logInfo("  out of which are for MOUSE  : ", counters[16].get());
         logInfo("  out of which are for HUMAN  : ", counters[17].get());
