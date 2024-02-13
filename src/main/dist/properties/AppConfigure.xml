@@ -2,7 +2,7 @@
 
 <beans>
     <bean id="manager" class="edu.mcw.rgd.Manager">
-        <property name="version" value="--Mouse Disease Annotation pipeline  -- build Dec 15, 2023" />
+        <property name="version" value="--Mouse Disease Annotation pipeline  -- build Feb 13, 2024" />
         <property name="sourcePipeline" value="MouseDO" />
         <property name="remoteDoFile" value="http://www.informatics.jax.org/downloads/reports/MGI_DO.rpt" />
         <property name="localDoFile" value="data/MGI_DO.rpt.gz" />
