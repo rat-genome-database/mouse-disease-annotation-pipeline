@@ -83,11 +83,7 @@ public class DAO {
     void merge(Map<Integer, List<Integer>> results, int speciesTypeKey1, int speciesTypeKey2) throws Exception {
 
         for( Ortholog o: orthologDAO.getAllOrthologs(speciesTypeKey1, speciesTypeKey2) ) {
-            List<Integer> rgdIds = results.get(o.getSrcRgdId());
-            if( rgdIds==null ) {
-                rgdIds = new ArrayList<>();
-                results.put(o.getSrcRgdId(), rgdIds);
-            }
+            List<Integer> rgdIds = results.computeIfAbsent(o.getSrcRgdId(), k -> new ArrayList<>());
             rgdIds.add(o.getDestRgdId());
         }
     }

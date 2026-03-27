@@ -6,6 +6,7 @@ import edu.mcw.rgd.datamodel.SpeciesType;
 import edu.mcw.rgd.datamodel.XdbId;
 import edu.mcw.rgd.datamodel.ontology.Annotation;
 import edu.mcw.rgd.process.FileDownloader;
+import edu.mcw.rgd.process.MemoryMonitor;
 import edu.mcw.rgd.process.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,6 +59,10 @@ public class Manager {
 
     public void run() throws Exception {
         long time0 = System.currentTimeMillis();
+
+        MemoryMonitor memoryMonitor = new MemoryMonitor();
+        memoryMonitor.start();
+
         Date date0 = new Date();
 
         logStatus.info("   "+dao.getConnectionInfo());
@@ -92,6 +97,8 @@ public class Manager {
         logStatus.info("===");
         logStatus.info("ANNOT COUNT CURRENT: "+ newAnnotCount + change);
 
+        memoryMonitor.stop();
+        logStatus.info(memoryMonitor.getSummary());
         logStatus.info("=== OK === elapsed time "+ Utils.formatElapsedTime(time0, System.currentTimeMillis()));
         logStatus.info("");
     }
