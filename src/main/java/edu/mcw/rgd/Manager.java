@@ -299,7 +299,7 @@ public class Manager {
                     a2.setEvidence(getEvidenceCode2());
                     a2.setNotes(omimIds);
                     a2.setCreatedDate(new Date());
-                    a2.setLastModifiedDate(a.getCreatedDate());
+                    a2.setLastModifiedDate(a2.getCreatedDate());
                     rec.annotsIncoming.add(a2);
 
                     // is the incoming annotation already in RGD
