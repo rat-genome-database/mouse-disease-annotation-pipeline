@@ -5,7 +5,7 @@ import edu.mcw.rgd.datamodel.RgdId;
 import edu.mcw.rgd.datamodel.SpeciesType;
 import edu.mcw.rgd.datamodel.XdbId;
 import edu.mcw.rgd.datamodel.ontology.Annotation;
-import edu.mcw.rgd.process.FileDownloader;
+import edu.mcw.rgd.process.FileDownloader2;
 import edu.mcw.rgd.process.MemoryMonitor;
 import edu.mcw.rgd.process.Utils;
 import org.apache.logging.log4j.LogManager;
@@ -105,7 +105,7 @@ public class Manager {
 
     String downloadRemoteFile() throws Exception {
 
-        FileDownloader downloader = new FileDownloader();
+        FileDownloader2 downloader = new FileDownloader2();
         downloader.setExternalFile(getRemoteDoFile());
         downloader.setLocalFile(getLocalDoFile());
         downloader.setUseCompression(true);
@@ -125,15 +125,19 @@ public class Manager {
 
             // validate header line
             String headerLine = in.readLine();
-            if( !headerLine.equals(EXPECTED_HEADER_LINE) ) {
+            if( !EXPECTED_HEADER_LINE.equals(headerLine) ) {
                 throw new Exception("Exception: Unexpected header line");
             }
 
             String line;
             while( (line=in.readLine())!=null ) {
-                Record rec = new Record();
-
                 String[] cols = line.split("[\\t]", -1);
+                if( cols.length < 8 ) {
+                    logStatus.warn("malformed line: "+line);
+                    continue;
+                }
+
+                Record rec = new Record();
                 rec.doTermAcc = cols[0];
                 rec.doTermName = cols[1]; // f.e. 3MC syndrome 1
                 rec.omimIds = cols[2]; // f.e. OMIM:257920
@@ -180,7 +184,7 @@ public class Manager {
 
         records.parallelStream().forEach(rec -> {
             String doId = rec.doTermAcc;
-            String omimIds = rec.omimIds.replace("|", " | ").intern();
+            String omimIds = rec.omimIds.replace("|", " | ");
             String egId = rec.egId;
             String mgiId = rec.mgiId;
 

@@ -1,3 +1,6 @@
+Jun 15, 2026
+  switched to FileDownloader2 (dropped commons-net and httpclient; MGI URL to https); hardened file parsing; removed an email recipient
+
 May 12, 2026
   qc: ortholog (ISS) annotation lastModifiedDate now uses its own createdDate (was incorrectly reading the parent IAGP date); updated dependencies
 
