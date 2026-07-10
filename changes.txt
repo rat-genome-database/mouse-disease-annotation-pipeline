@@ -1,3 +1,6 @@
+Jul 10, 2026
+  fixed potential crash on orthologs missing from the gene map; updated dependencies
+
 Jun 15, 2026
   switched to FileDownloader2 (dropped commons-net and httpclient; MGI URL to https); hardened file parsing; removed an email recipient
 

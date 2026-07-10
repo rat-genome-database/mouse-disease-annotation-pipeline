@@ -184,7 +184,6 @@ public class Manager {
 
         records.parallelStream().forEach(rec -> {
             String doId = rec.doTermAcc;
-            String omimIds = rec.omimIds.replace("|", " | ");
             String egId = rec.egId;
             String mgiId = rec.mgiId;
 
@@ -225,6 +224,7 @@ public class Manager {
                     return; // skip non-MOUSE annotations
                 }
 
+                String omimIds = rec.omimIds.replace("|", " | ");
                 String key = rec.term.getAccId() + "|" + rec.gene.getRgdId();
 
                 counters[6].incrementAndGet();
@@ -272,6 +272,9 @@ public class Manager {
                 for( int geneRgdId: orthos ) {
 
                     Gene gene = geneMap.get(geneRgdId);
+                    if( gene==null ) {
+                        continue; // ortholog points to a gene not in the active gene map
+                    }
                     String key2 = rec.term.getAccId()+"|"+geneRgdId;
 
                     counters[13].incrementAndGet();
