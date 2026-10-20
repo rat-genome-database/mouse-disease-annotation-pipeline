@@ -1,3 +1,6 @@
+Oct 20, 2026
+  migrated to postgres; updated dependencies
+
 Jul 10, 2026
   fixed potential crash on orthologs missing from the gene map; updated dependencies
 
