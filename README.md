@@ -15,13 +15,17 @@ data that RGD originally submitted to the Alliance, which was then ingested by M
 3. **QC** — matches genes by MGI ID or NCBI Gene ID; validates DO terms against RGD ontology.
    Creates IAGP annotations for matched mouse genes and ISS ortholog annotations for
    rat/mouse/human orthologs.
-4. **Load** — inserts new annotations; updates last-modified timestamps on existing matches
+4. **Load** — inserts new annotations; updates last-modified timestamps on existing matches,
+   and their notes (OMIM ids) when these changed in the incoming file
 5. **Delete stale** — removes annotations not seen in the current run, subject to a
    configurable deletion threshold (percentage of original count) as a safety measure
 
 ## Logging
 
 - `status` — pipeline progress and summary counters
+- `inserted`, `updated`, `deleted` — annotations inserted, with notes updated, and deleted
+
+`run.sh` emails "OK" with the summary log, or "FAILED" with `run.log` when the pipeline fails.
 
 ## Build and run
 

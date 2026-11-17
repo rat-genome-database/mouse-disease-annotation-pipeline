@@ -19,6 +19,7 @@ public class DAO {
 
     Logger logInserted = LogManager.getLogger("inserted");
     Logger logDeleted = LogManager.getLogger("deleted");
+    Logger logUpdated = LogManager.getLogger("updated");
 
     AnnotationDAO adao = new AnnotationDAO();
     GeneDAO geneDAO = new GeneDAO();
@@ -44,6 +45,12 @@ public class DAO {
 
     public int updateLastModified(int fullAnnotKey) throws Exception {
         return adao.updateLastModified(fullAnnotKey);
+    }
+
+    /// update notes and last modified date
+    public int updateNotes(int fullAnnotKey, String notes) throws Exception {
+        logUpdated.debug("KEY:"+fullAnnotKey+" NOTES:"+notes);
+        return adao.updateAnnotationNotes(fullAnnotKey, notes);
     }
 
     public int insertAnnotation(Annotation annot) throws Exception{
