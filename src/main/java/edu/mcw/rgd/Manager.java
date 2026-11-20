@@ -36,10 +36,6 @@ public class Manager {
     private String evidenceCode;
     private int refRgdId;
     private int createdBy;
-    private int refRgdIdOmimPipeline;
-    private int refRgdIdCtdPipeline;
-    private String evidenceCodeOmimPipeline;
-    private String evidenceCodeCtdPipeline;
     private String staleAnnotDeleteThreshold;
     private String evidenceCode2;
 
@@ -119,8 +115,11 @@ public class Manager {
 
     final String EXPECTED_HEADER_LINE = "DO Disease ID\tDO Disease Name\tOMIM IDs\tCommon Organism Name\tNCBI Taxon ID\tSymbol\tEntrezGene ID\tMouse MGI ID";
 
+    static final String MOUSE_TAXON_ID = "10090";
+
     List<Record> loadFile(String localFileName) throws Exception {
         List<Record> records = new ArrayList<>();
+        int linesRead = 0;
 
         try( BufferedReader in = Utils.openReader(localFileName) ) {
 
@@ -135,6 +134,12 @@ public class Manager {
                 String[] cols = line.split("[\\t]", -1);
                 if( cols.length < 8 ) {
                     logStatus.warn("malformed line: "+line);
+                    continue;
+                }
+                linesRead++;
+
+                // only mouse lines are annotated; skip human lines (most of the file) before any db lookups
+                if( !MOUSE_TAXON_ID.equals(cols[4]) ) {
                     continue;
                 }
 
@@ -152,7 +157,8 @@ public class Manager {
             }
         }
 
-        logInfo("lines loaded: ", records.size());
+        logInfo("lines loaded: ", linesRead);
+        logInfo("  out of which are for MOUSE: ", records.size());
         return records;
     }
 
@@ -164,12 +170,6 @@ public class Manager {
 
         Map<String, Annotation> mouseDoAnnotsInRgdIss = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode2());
         logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode2()+": ", mouseDoAnnotsInRgdIss.size());
-
-        //Set<String> omimDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdOmimPipeline(), getEvidenceCodeOmimPipeline()).keySet();
-        //logInfo("annotations in RGD for OmimDiseasePipeline, evidence "+getEvidenceCodeOmimPipeline()+": ", omimDoAnnotsInRgd.size());
-
-        //Set<String> ctdDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdIdCtdPipeline(), getEvidenceCodeCtdPipeline()).keySet();
-        //logInfo("annotations in RGD for CTDDiseasePipeline, evidence "+getEvidenceCodeCtdPipeline()+": ", ctdDoAnnotsInRgd.size());
 
         Map<Integer, List<Integer>> orthologs = dao.getOrthologs();
         logStatus.info("rat-mouse-human orthologs loaded");
@@ -469,38 +469,6 @@ public class Manager {
 
     public int getCreatedBy() {
         return createdBy;
-    }
-
-    public void setRefRgdIdOmimPipeline(int refRgdIdOmimPipeline) {
-        this.refRgdIdOmimPipeline = refRgdIdOmimPipeline;
-    }
-
-    public int getRefRgdIdOmimPipeline() {
-        return refRgdIdOmimPipeline;
-    }
-
-    public void setRefRgdIdCtdPipeline(int refRgdIdCtdPipeline) {
-        this.refRgdIdCtdPipeline = refRgdIdCtdPipeline;
-    }
-
-    public int getRefRgdIdCtdPipeline() {
-        return refRgdIdCtdPipeline;
-    }
-
-    public void setEvidenceCodeOmimPipeline(String evidenceCodeOmimPipeline) {
-        this.evidenceCodeOmimPipeline = evidenceCodeOmimPipeline;
-    }
-
-    public String getEvidenceCodeOmimPipeline() {
-        return evidenceCodeOmimPipeline;
-    }
-
-    public void setEvidenceCodeCtdPipeline(String evidenceCodeCtdPipeline) {
-        this.evidenceCodeCtdPipeline = evidenceCodeCtdPipeline;
-    }
-
-    public String getEvidenceCodeCtdPipeline() {
-        return evidenceCodeCtdPipeline;
     }
 
     public void setStaleAnnotDeleteThreshold(String staleAnnotDeleteThreshold) {
