@@ -1,3 +1,6 @@
+Nov 20, 2026
+  human lines skipped right after parsing (no db lookups for them); removed unused OMIM/CTD settings; updated dependencies; updated README
+
 Jul 10, 2026
   fixed potential crash on orthologs missing from the gene map; updated dependencies
 

@@ -11,7 +11,8 @@ data that RGD originally submitted to the Alliance, which was then ingested by M
 ## Logic
 
 1. **Download** — fetches MGI_DO.rpt from MGI (gene-to-DO term mappings)
-2. **Parse** — reads tab-delimited records with DO term, gene symbol, NCBI Gene ID, and MGI ID
+2. **Parse** — reads tab-delimited records with DO term, gene symbol, NCBI Gene ID, and MGI ID;
+   only mouse lines (NCBI taxon 10090) are kept, human lines are dropped right away
 3. **QC** — matches genes by MGI ID or NCBI Gene ID; validates DO terms against RGD ontology.
    Creates IAGP annotations for matched mouse genes and ISS ortholog annotations for
    rat/mouse/human orthologs.
