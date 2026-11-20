@@ -17,6 +17,7 @@ import org.springframework.core.io.FileSystemResource;
 import java.io.BufferedReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -164,10 +165,10 @@ public class Manager {
     void qc(List<Record> records) throws Exception {
 
         // load annotations in rgd for Mouse Do pipeline
-        Map<String, Integer> mouseDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode());
+        Map<String, Annotation> mouseDoAnnotsInRgd = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode());
         logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode()+": ", mouseDoAnnotsInRgd.size());
 
-        Map<String, Integer> mouseDoAnnotsInRgdIss = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode2());
+        Map<String, Annotation> mouseDoAnnotsInRgdIss = getTermAccAndObjectRgdIdsForAnnotations(getRefRgdId(), getEvidenceCode2());
         logInfo("annotations in RGD for MouseDiseasePipeline, evidence "+getEvidenceCode2()+": ", mouseDoAnnotsInRgdIss.size());
 
         Map<Integer, List<Integer>> orthologs = dao.getOrthologs();
@@ -176,7 +177,7 @@ public class Manager {
         Map<Integer, Gene> geneMap = dao.getGenes();
         logInfo("rat-mouse-human genes loaded: ", geneMap.size());
 
-        // note: counters 4,5,11,12 are not used
+        // note: counters 11,12 are not used
         AtomicInteger[] counters = new AtomicInteger[19];
         for( int i=0; i<counters.length; i++ ) {
             counters[i] = new AtomicInteger(0);
@@ -256,10 +257,14 @@ public class Manager {
                 rec.annotsIncoming.add(a);
 
                 // is the incoming annotation already in RGD
-                Integer annotKey = mouseDoAnnotsInRgd.get(key);
-                if( annotKey!=null ) {
-                    a.setKey(annotKey);
+                Annotation inRgd = mouseDoAnnotsInRgd.get(key);
+                if( inRgd!=null ) {
+                    a.setKey(inRgd.getKey());
                     counters[9].incrementAndGet();
+                    if( !Utils.stringsAreEqual(inRgd.getNotes(), a.getNotes()) ) {
+                        annotKeysWithChangedNotes.add(inRgd.getKey());
+                        counters[4].incrementAndGet();
+                    }
                 } else {
                     counters[10].incrementAndGet();
                 }
@@ -310,10 +315,14 @@ public class Manager {
                     rec.annotsIncoming.add(a2);
 
                     // is the incoming annotation already in RGD
-                    Integer annotKey2 = mouseDoAnnotsInRgdIss.get(key2);
-                    if( annotKey2!=null ) {
-                        a2.setKey(annotKey2);
+                    Annotation inRgd2 = mouseDoAnnotsInRgdIss.get(key2);
+                    if( inRgd2!=null ) {
+                        a2.setKey(inRgd2.getKey());
                         counters[14].incrementAndGet();
+                        if( !Utils.stringsAreEqual(inRgd2.getNotes(), a2.getNotes()) ) {
+                            annotKeysWithChangedNotes.add(inRgd2.getKey());
+                            counters[5].incrementAndGet();
+                        }
                     } else {
                         counters[15].incrementAndGet();
                     }
@@ -330,6 +339,7 @@ public class Manager {
         logInfo("  out of which are for MOUSE  : ", counters[7].get());
         logInfo("  out of which are for HUMAN  : ", counters[8].get());
         logInfo("IAGP MouseDO annotations already in RGD: ", counters[9].get());
+        logInfo("  out of which with updated notes (OMIM ids): ", counters[4].get());
         logInfo("IAGP MouseDO annotations inserted: ", counters[10].get());
         logStatus.info("===");
         logInfo("ISS annotations incoming: MouseDO : ", counters[13].get());
@@ -337,8 +347,12 @@ public class Manager {
         logInfo("  out of which are for HUMAN  : ", counters[17].get());
         logInfo("  out of which are for RAT    : ", counters[18].get());
         logInfo("ISS MouseDO annotations already in RGD: ", counters[14].get());
+        logInfo("  out of which with updated notes (OMIM ids): ", counters[5].get());
         logInfo("ISS MouseDO annotations inserted: ", counters[15].get());
     }
+
+    // keys of annotations in RGD whose notes (OMIM ids) differ from the incoming data
+    private final Set<Integer> annotKeysWithChangedNotes = ConcurrentHashMap.newKeySet();
 
     void logInfo(String txt, int cnt) {
         if( cnt != 0 ) {
@@ -346,12 +360,12 @@ public class Manager {
         }
     }
 
-    Map<String, Integer> getTermAccAndObjectRgdIdsForAnnotations(int refRgdId, String evidence) throws Exception {
+    Map<String, Annotation> getTermAccAndObjectRgdIdsForAnnotations(int refRgdId, String evidence) throws Exception {
         List<Annotation> annots = dao.getAnnotationsByReferenceAndEvidence(refRgdId, evidence);
-        Map<String,Integer> result = new HashMap<>();
+        Map<String, Annotation> result = new HashMap<>();
         for( Annotation a: annots ) {
             String key = a.getTermAcc()+"|"+a.getAnnotatedObjectRgdId();
-            result.put(key, a.getKey());
+            result.put(key, a);
         }
         return result;
     }
@@ -363,7 +377,11 @@ public class Manager {
             try {
                 for( Annotation a: rec.annotsIncoming ) {
                     if( a.getKey() != null ) {
-                        dao.updateLastModified(a.getKey());
+                        if( annotKeysWithChangedNotes.contains(a.getKey()) ) {
+                            dao.updateNotes(a.getKey(), a.getNotes()); // also updates last modified date
+                        } else {
+                            dao.updateLastModified(a.getKey());
+                        }
                     } else {
                         dao.insertAnnotation(a);
                     }
